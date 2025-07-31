@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Users/mehta/OneDrive/Desktop/Cns%20t.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Secure Messaging App</title>
+    <style>
+   body {
+    background: linear-gradient(135deg, #22223b 0%, #3a3a58 100%);
+    color: #f8f8f2;
+    font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(44, 47, 80, 0.85);
+    border-radius: 18px;
+    max-width: 430px;
+    margin: 50px auto 0;
+    padding: 38px;
+    box-shadow: 0 8px 48px 0 rgba(60, 52, 128, 0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(100,100,255,0.08);
+    position: relative;
+}
+
+h1 {
+    margin-bottom: 28px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #d6acff;
+    text-shadow: 0 2px 16px rgba(100,90,255,0.13);
+}
+
+.section {
+    margin-bottom: 26px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #8be9fd;
+    text-shadow: 0 1px 2px #1a1a2670;
+}
+
+textarea {
+    width: 100%;
+    min-height: 65px;
+    resize: vertical;
+    border-radius: 8px;
+    border: 1.5px solid #44475a;
+    font-size: 1.08rem;
+    padding: 11px 13px;
+    background: rgba(68,71,90,0.75);
+    color: #faf7ff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 6px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #9be7ff;
+    box-shadow: 0 1px 8px #9be7ff44;
+    background: rgba(68,71,90,0.95);
+}
+
+button {
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #50fa7b, #47eeb0 70%);
+    color: #23223b;
+    font-weight: 700;
+    padding: 13px 28px;
+    margin-right: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 12px #12ff8d1a;
+    transition: background 0.22s, transform 0.14s, box-shadow 0.2s;
+    letter-spacing: 0.4px;
+}
+
+button#decryptBtn {
+    background: linear-gradient(90deg, #ff79c6, #ffb6e6 70%);
+    color: #2d233b;
+    box-shadow: 0 1px 10px #ffb6e64c;
+}
+
+button:hover, button:focus {
+    opacity: 0.96;
+    transform: translateY(-2px) scale(1.025);
+    box-shadow: 0 4px 24px #bd93f96a;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background: #dd81ea;
+}
+::-webkit-scrollbar-thumb {
+    background: #d981ea;
+    border-radius: 6px;
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Messaging</h1>
+
+        <div class="section">
+            <label for="message">Message:</label>
+            <textarea id="message" placeholder="Enter your message here"></textarea>
+        </div>
+
+        <div class="section">
+            <button id="encryptBtn">Encrypt &amp; Send</button>
+            <button id="decryptBtn">Decrypt Received</button>
+        </div>
+
+        <div class="section">
+            <label for="encrypted">Encrypted Message:</label>
+            <textarea id="encrypted" readonly=""></textarea>
+        </div>
+
+        <div class="section">
+            <label for="decrypted">Decrypted Message:</label>
+            <textarea id="decrypted" readonly=""></textarea>
+        </div>
+    </div>
+    
+    <!-- Here is the added script! -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script>
+    const password = "SecretPassword123!"; // In real systems, never hardcode or share
+
+    document.getElementById('encryptBtn').onclick = () => {
+      let msg = document.getElementById('message').value;
+      if (!msg) {
+        alert("Please enter a message to encrypt.");
+        return;
+      }
+      // Encrypt message
+      let ciphertext = CryptoJS.AES.encrypt(msg, password).toString();
+      document.getElementById('encrypted').value = ciphertext;
+      document.getElementById('decrypted').value = "";
+    };
+
+    document.getElementById('decryptBtn').onclick = () => {
+      let ciphertext = document.getElementById('encrypted').value;
+      if (!ciphertext) {
+        alert("Please paste or generate an encrypted message.");
+        return;
+      }
+      // Decrypt message
+      try {
+        let bytes = CryptoJS.AES.decrypt(ciphertext, password);
+        let originalText = bytes.toString(CryptoJS.enc.Utf8);
+        if (!originalText) throw "Wrong password or bad data";
+        document.getElementById('decrypted').value = originalText;
+      } catch (e) {
+        document.getElementById('decrypted').value = "Decryption failed!";
+      }
+    };
+    </script>
+
+</body></html>
